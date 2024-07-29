@@ -38,6 +38,7 @@
                                     </div>
                                     <div class="col-md-6">
                                         <x-input-field name="surat_jalan" id="surat_jalan" label="Surat Jalan"/>
+                                        <x-input-field type="date" name="tgl" id="tgl" label="Tanggal Kirim"/>
                                         <x-select-field name="kendaraan_id" label="Kendaraan" id="kendaraan_id" :options="$kendaraan" />
                                         <x-select-field name="driver_id" label="Driver" id="driver_id" :options="$driver" />
                                         <x-input-field name="barang" id="barang" label="Barang"/>
@@ -63,8 +64,9 @@
     <script src="/js/plugins/ckeditor5-classic/build/ckeditor.js"></script>
     <script>
         
-        $("#field-tgl_lahir").flatpickr({
+        $("#field-tgl").flatpickr({
             altInput: true,
+            defaultDate : 'today',
             altFormat: "d M Y",
             dateFormat: "Y-m-d",
             locale : "id",

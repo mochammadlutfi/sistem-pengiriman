@@ -45,7 +45,7 @@
                 </li>
                 <li class="nav-item">
                     <a href="{{ route('admin.sparepart.index') }}" class="nav-link {{ request()->is('admin/sparepart') ? ' active' : '' }}"> 
-                        <i class="nav-icon bi bi-download"></i>
+                        <i class="nav-icon fa fa-gears"></i>
                         <p>Sparepart</p>
                     </a>
                 </li>

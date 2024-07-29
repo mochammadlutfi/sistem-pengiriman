@@ -72,8 +72,10 @@ class PengirimanController extends Controller
             DB::beginTransaction();
             try{
                 $data = new Pengiriman();
+                $data->nomor = $this->getNomor();
                 $data->pelanggan_id = $request->pelanggan_id;
                 $data->tujuan = $request->tujuan;
+                $data->tgl = $request->tgl;
                 $data->nama_penerima = $request->nama_penerima;
                 $data->hp_penerima = $request->hp_penerima;
                 $data->surat_jalan = $request->surat_jalan;
@@ -100,7 +102,9 @@ class PengirimanController extends Controller
      */
     public function show($id)
     {
-        //
+        $data = Pengiriman::where('id', $id)->first();
+        
+        return view('admin.pengiriman.show',compact('data'));
     }
 
     /**
@@ -113,9 +117,12 @@ class PengirimanController extends Controller
     {
         $data = Pengiriman::where('id', $id)->first();
 
-        return view('admin.pengiriman.edit',[
-            'data' => $data
-        ]);
+        $pelanggan = Pelanggan::select('nama as label', 'id as value')->orderBy('id', 'DESC')->get()->toArray();
+        $driver = User::select('nama as label', 'id as value')
+        ->where('level', 'Driver')->orderBy('id', 'DESC')->get()->toArray();
+        $kendaraan = Kendaraan::select('no_polisi as label', 'id as value')->orderBy('id', 'DESC')->get()->toArray();
+
+        return view('admin.pengiriman.edit',compact('pelanggan', 'driver', 'kendaraan', 'data'));
     }
 
     /**
@@ -128,12 +135,14 @@ class PengirimanController extends Controller
     public function update(Request $request, $id)
     {
         $rules = [
-            'nama' => 'required',
-            'telp' => 'required',
-            'email' => 'required',
-            'nama_cp' => 'required',
-            'hp_cp' => 'required',
-            'alamat' => 'required',
+            'pelanggan_id' => 'required',
+            'tujuan' => 'required',
+            'nama_penerima' => 'required',
+            'hp_penerima' => 'required',
+            'surat_jalan' => 'required',
+            'kendaraan_id' => 'required',
+            'driver_id' => 'required',
+            'barang' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -143,12 +152,15 @@ class PengirimanController extends Controller
             DB::beginTransaction();
             try{
                 $data = Pengiriman::where('id', $id)->first();
-                $data->nama = $request->nama;
-                $data->telp = $request->telp;
-                $data->email = $request->email;
-                $data->nama_cp = $request->nama_cp;
-                $data->hp_cp = $request->hp_cp;
-                $data->alamat = $request->alamat;
+                $data->pelanggan_id = $request->pelanggan_id;
+                $data->tujuan = $request->tujuan;
+                $data->tgl = $request->tgl;
+                $data->nama_penerima = $request->nama_penerima;
+                $data->hp_penerima = $request->hp_penerima;
+                $data->surat_jalan = $request->surat_jalan;
+                $data->kendaraan_id = $request->kendaraan_id;
+                $data->user_id = $request->driver_id;
+                $data->barang = $request->barang;
                 $data->save();
 
             }catch(\QueryException $e){
@@ -237,52 +249,20 @@ class PengirimanController extends Controller
     }
 
     
-    public function peserta($id, Request $request)
+    private function getNomor()
     {
-        if ($request->ajax()) {
-            $query = UserTraining::with('user')->where('training_id', $id)->get();
+        $q = Pengiriman::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));
 
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $btn = '<div class="dropdown">
-                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" id="dropdown-default-outline-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Aksi
-                        </button>
-                        <div class="dropdown-menu fs-sm" aria-labelledby="dropdown-default-outline-primary" style="">';
-                        $btn .= '<a class="dropdown-item" href="'. route('admin.pengiriman.edit', $row->id).'"><i class="si si-note me-1"></i>Ubah</a>';
-                        $btn .= '<a class="dropdown-item" href="javascript:void(0)" onclick="hapus('. $row->id.')"><i class="si si-trash me-1"></i>Hapus</a>';
-                    $btn .= '</div></div>';
-                    return $btn; 
-                })
-                ->editColumn('tgl_training', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->editColumn('tgl_daftar', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai_daftar);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai_daftar);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai_daftar == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d M') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->rawColumns(['action',]) 
-                ->make(true);
+        $code = 'KRM';
+        $no = 1;
+        date_default_timezone_set('Asia/Jakarta');
+
+        if($q->count() > 0){
+            foreach($q->get() as $k){
+                return $code . date('ym') .'/'.sprintf("%05s", abs(((int)$k->kd_max) + 1));
+            }
+        }else{
+            return $code . date('ym') .'/'. sprintf("%05s", $no);
         }
-
-        $data = Training::where('id', $id)->first();
-        $user = User::orderBy('nama', 'ASC')->get();
-
-        return view('admin.pengiriman.peserta',[
-            'data' => $data,
-            'user' => $user
-        ]);
     }
 }

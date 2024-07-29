@@ -25,7 +25,18 @@ class Pengiriman extends Model
         return $this->hasMany(PembelianDetail::class, 'pembelian_id');
     }
 
+    public function driver(){
+        return $this->belongsTo(User::class, 'user_id');
+    }
     
+    public function pelanggan(){
+        return $this->belongsTo(Pelanggan::class, 'pelanggan_id');
+    }
+
+    public function kendaraan(){
+        return $this->belongsTo(Kendaraan::class, 'kendaraan_id');
+    }
+
     public function sluggable(): array
     {
         return [
