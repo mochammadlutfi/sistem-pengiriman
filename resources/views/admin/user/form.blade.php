@@ -1,0 +1,59 @@
+<x-app-layout>
+    @push('styles')
+    @endpush
+
+
+    <div class="app-content-header"> 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Tambah Pelanggan</h3>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-end">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item"><a href="{{ route('admin.user.index')}}">Pelanggan</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            Tambah
+                        </li>
+                    </ol>
+                </div>
+            </div> 
+        </div> 
+    </div>
+    <div class="app-content"> 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12"> 
+                    <div class="card">
+                        <div class="card-body">
+                            <form method="POST" action="{{ route('admin.user.store') }}">
+                                @csrf
+
+                                <button type="submit" class="btn btn-primary">
+                                Simpan
+                                </button>
+                            </form>
+                        </div> 
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    @push('scripts')
+    <script src="/js/plugins/flatpickr/flatpickr.min.js"></script>
+    <script src="/js/plugins/flatpickr/l10n/id.js"></script>
+    <script src="/js/plugins/ckeditor5-classic/build/ckeditor.js"></script>
+    <script>
+        
+        $("#field-tgl_lahir").flatpickr({
+            altInput: true,
+            altFormat: "d M Y",
+            dateFormat: "Y-m-d",
+            locale : "id",
+        });
+    </script>
+    @endpush
+</x-app-layout>
+
