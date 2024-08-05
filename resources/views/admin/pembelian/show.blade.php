@@ -3,7 +3,7 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Detail Pengiriman</h3>
+                    <h3 class="mb-0">Detail Pembelian</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
@@ -23,9 +23,9 @@
                 <div class="col-12"> 
                     <div class="card">
                         <div class="card-header">
-                            <a href="{{ route('admin.pengiriman.pdf', $data->id)}}" class="btn btn-primary">
+                            {{-- <a href="{{ route('admin.pengiriman.pdf', $data->id)}}" class="btn btn-primary">
                                 Invoice
-                            </a>
+                            </a> --}}
                             <div class="card-tools">
                             </div>
                         </div>
