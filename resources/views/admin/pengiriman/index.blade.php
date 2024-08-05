@@ -63,6 +63,12 @@
                                                 </button>
                                                 <ul class="dropdown-menu">
                                                     <li>
+                                                        <a class="d-flex dropdown-item justify-between justify-content-between" href="{{ route('admin.pengiriman.show', $d->id)}}">
+                                                            Detail
+                                                            <i class="fa fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
                                                         <a class="d-flex dropdown-item justify-between justify-content-between" href="{{ route('admin.pengiriman.edit', $d->id)}}">
                                                             Ubah
                                                             <i class="fa fa-edit"></i>

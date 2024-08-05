@@ -22,7 +22,7 @@ class Pengiriman extends Model
     ];
 
     public function detail(){
-        return $this->hasMany(PembelianDetail::class, 'pembelian_id');
+        return $this->hasMany(PengirimanDetail::class, 'pengiriman_id');
     }
 
     public function driver(){

@@ -22,32 +22,61 @@
             <div class="row">
                 <div class="col-12"> 
                     <div class="card">
+                        <div class="card-header">
+                            <a href="{{ route('admin.pengiriman.pdf', $data->id)}}" class="btn btn-primary">
+                                Invoice
+                            </a>
+                            <div class="card-tools">
+                            </div>
+                        </div>
                         <div class="card-body">
-                            <form method="POST" action="{{ route('admin.pengiriman.update', $data->id) }}">
-                                @csrf
-                                <div class="row">
-                                    <div class="col-md-6">
-                                        <x-select-field name="pelanggan_id" label="Pelanggan" id="pelanggan_id" value="{{ $data->pelanggan_id }}" :options="$pelanggan" />
-                                        <div class="mb-4">
-                                            <label for="field-tujuan">Alamat Tujuan</label>
-                                            <textarea class="form-control {{ $errors->has('tujuan') ? 'is-invalid' : '' }}" rows="2" name="tujuan" id="field-tujuan">{{ old('tujuan', $data->tujuan) }}</textarea>
-                                            <x-input-error :messages="$errors->get('tujuan')" class="mt-2" />
-                                        </div>
-                                        <x-input-field name="nama_penerima" id="nama_penerima" label="Nama Penerima" value="{{ $data->nama_penerima }}"/>
-                                        <x-input-field name="hp_penerima" id="hp_penerima" label="No HP Penerima" value="{{ $data->hp_penerima }}"/>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <x-input-field name="surat_jalan" id="surat_jalan" label="Surat Jalan" value="{{ $data->surat_jalan }}"/>
-                                        <x-input-field type="date" name="tgl" id="tgl" label="Tanggal Kirim" value="{{ $data->tgl }}"/>
-                                        <x-select-field name="kendaraan_id" label="Kendaraan" id="kendaraan_id" :options="$kendaraan"  value="{{ $data->kendaraan_id }}"/>
-                                        <x-select-field name="driver_id" label="Driver" id="driver_id" :options="$driver"  value="{{ $data->user_id }}"/>
-                                        <x-input-field name="barang" id="barang" label="Barang" value="{{ $data->barang }}"/>
-                                    </div>
+                            <div class="row">
+                                <div class="col-6">
+                                    <x-field-read label="No Pengiriman" value="{{ $data->nomor }}"/>
+                                    <x-field-read label="Pelanggan" value="{{ $data->pelanggan->nama }}"/>
+                                    <x-field-read label="Tujuan" value="{{ $data->tujuan }}"/>
+                                    <x-field-read label="Nama Penerima" value="{{ $data->nama_penerima }}"/>
+                                    <x-field-read label="No HP Penerima" value="{{ $data->hp_penerima }}"/>
                                 </div>
-                                <button type="submit" class="btn btn-primary">
-                                    Simpan
-                                </button>
-                            </form>
+                                <div class="col-6">
+                                    <x-field-read label="No Surat Jalan" value="{{ $data->surat_jalan }}"/>
+                                    <x-field-read label="Tanggal" value="{{ $data->tgl }}"/>
+                                    <x-field-read label="Unit Kendaraan" value="{{ $data->kendaraan->merk }} - {{ $data->kendaraan->model }} | {{ $data->kendaraan->no_polisi }}"/>
+                                    <x-field-read label="Driver" value="{{ $data->driver->nama }}"/>
+                                </div>
+                            </div>
+                            <table id="table-detail" class="table table-bordered table-vcenter">
+                                <thead>
+                                    <tr>
+                                        <th width="200px">No DO</th>
+                                        <th width="250px">Nama Barang</th>
+                                        <th width="100px">Jumlah</th>
+                                        <th width="120px">Satuan</th>
+                                        <th>Fee Satuan</th>
+                                        <th width="150px">Subtotal</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($data->detail as $d)
+                                    <tr>
+                                        <td>{{ $d->do }}</td>
+                                        <td>{{ $d->barang }}</td>
+                                        <td>{{ $d->qty }}</td>
+                                        <td>{{ $d->satuan }}</td>
+                                        <td>Rp. {{ number_format($d->fee,0,',','.') }}</td>
+                                        <td>Rp. {{ number_format($d->subtotal,0,',','.') }}</td>
+                                    </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                            <div class="row mt-3">
+                                <div class="col-md-9">
+                                    <h5 class="fs-5 text-end">Total</h5>
+                                </div>
+                                <div class="col-md-3">
+                                    <h5 class="fs-5" id="showTotal">Rp. {{ number_format($data->total,0,',','.') }}</h5>
+                                </div>
+                            </div>
                         </div> 
                     </div>
                 </div>

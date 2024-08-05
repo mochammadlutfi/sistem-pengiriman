@@ -22,16 +22,7 @@ class PengirimanDetail extends Model
     ];
 
     public function detail(){
-        return $this->hasMany(PembelianDetail::class, 'pembelian_id');
+        return $this->hasMany(Pengiriman::class, 'pengiriman_id');
     }
 
-    
-    public function sluggable(): array
-    {
-        return [
-            'slug' => [
-                'source' => 'nama'
-            ]
-        ];
-    }
 }

@@ -121,6 +121,7 @@ Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
                 Route::get('/create','PengirimanController@create')->name('create');
                 Route::post('/store','PengirimanController@store')->name('store');
                 Route::get('/{id}','PengirimanController@show')->name('show');
+                Route::get('/{id}/pdf','PengirimanController@pdf')->name('pdf');
                 Route::get('/{id}/edit','PengirimanController@edit')->name('edit');
                 Route::post('{id}/update','PengirimanController@update')->name('update');
                 Route::post('{id}/status','PengirimanController@status')->name('status');

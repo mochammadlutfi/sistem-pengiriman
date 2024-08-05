@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Storage;
 use Carbon\Carbon;
-
+use PDF;
 use App\Models\Pengiriman;
+use App\Models\PengirimanDetail;
 use App\Models\Pelanggan;
 use App\Models\Kendaraan;
 use App\Models\User;
@@ -53,6 +54,7 @@ class PengirimanController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $rules = [
             'pelanggan_id' => 'required',
             'tujuan' => 'required',
@@ -61,12 +63,10 @@ class PengirimanController extends Controller
             'surat_jalan' => 'required',
             'kendaraan_id' => 'required',
             'driver_id' => 'required',
-            'barang' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
         if ($validator->fails()){
-            dd($validator->errors());
             return back()->withInput()->withErrors($validator->errors());
         }else{
             DB::beginTransaction();
@@ -81,16 +81,27 @@ class PengirimanController extends Controller
                 $data->surat_jalan = $request->surat_jalan;
                 $data->kendaraan_id = $request->kendaraan_id;
                 $data->user_id = $request->driver_id;
-                $data->barang = $request->barang;
+                $data->total = $request->total;
                 $data->save();
+ 
+                foreach($request->lines as $l){
+                    $line = new PengirimanDetail();
+                    $line->do = $l['do'];
+                    $line->barang = $l['barang'];
+                    $line->satuan = $l['satuan'];
+                    $line->qty = $l['jumlah'];
+                    $line->fee = $l['harga'];
+                    $line->subtotal = $l['subtotal'];
 
+                    $data->detail()->save($line);
+                }
             }catch(\QueryException $e){
                 DB::rollback();
                 dd($e);
             }
 
             DB::commit();
-            return redirect()->route('admin.pengiriman.index');
+            return redirect()->route('admin.pengiriman.show', $data->id);
         }
     }
 
@@ -142,7 +153,6 @@ class PengirimanController extends Controller
             'surat_jalan' => 'required',
             'kendaraan_id' => 'required',
             'driver_id' => 'required',
-            'barang' => 'required',
         ];
 
         $validator = Validator::make($request->all(), $rules);
@@ -160,8 +170,24 @@ class PengirimanController extends Controller
                 $data->surat_jalan = $request->surat_jalan;
                 $data->kendaraan_id = $request->kendaraan_id;
                 $data->user_id = $request->driver_id;
-                $data->barang = $request->barang;
+                $data->total = $request->total;
                 $data->save();
+
+                foreach($request->lines as $l){
+                    if(array_key_exists('id', $l)){
+                        $line = PengirimanDetail::where('id', $l['id'])->first();
+                    }else{
+                        $line = new PengirimanDetail();
+                    }
+                    $line->do = $l['do'];
+                    $line->barang = $l['barang'];
+                    $line->satuan = $l['satuan'];
+                    $line->qty = $l['jumlah'];
+                    $line->fee = $l['harga'];
+                    $line->subtotal = $l['subtotal'];
+
+                    $data->detail()->save($line);
+                }
 
             }catch(\QueryException $e){
                 DB::rollback();
@@ -169,7 +195,7 @@ class PengirimanController extends Controller
             }
 
             DB::commit();
-            return redirect()->route('admin.pengiriman.index');
+            return redirect()->route('admin.pengiriman.show', $data->id);
         }
     }
 
@@ -264,5 +290,20 @@ class PengirimanController extends Controller
         }else{
             return $code . date('ym') .'/'. sprintf("%05s", $no);
         }
+    }
+
+    
+    public function pdf($id, Request $request)
+    {
+        $data = Pengiriman::where('id', $id)->first();
+
+        $config = [
+            'format' => 'A4-P'
+        ];
+        $pdf = PDF::loadView('reports.invoice', [
+            'data' => $data,
+        ], [ ], $config);
+
+        return $pdf->stream('Invoice '. $data->nomor.'.pdf');
     }
 }
