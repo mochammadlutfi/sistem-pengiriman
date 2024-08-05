@@ -44,6 +44,7 @@ use Illuminate\Support\Facades\Route;
 //     Route::post('/pelatihan/simpan','TrainingController@register')->name('user.training.register');    
 // });
 
+Route::get('/','Admin/LoginController@showLoginForm')->name('login');
 Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
     
     Route::middleware('guest')->group(function () {
