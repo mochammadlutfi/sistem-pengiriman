@@ -255,7 +255,7 @@ class PengirimanController extends Controller
         }else{
             DB::beginTransaction();
             try{
-                $data = Training::where('id', $request->id)->first();
+                $data = Pengiriman::where('id', $request->id)->first();
                 $data->status = $request->status;
                 $data->save();
 
@@ -293,6 +293,42 @@ class PengirimanController extends Controller
     }
 
     
+    public function bukti(Request $request, $id)
+    {
+        $rules = [
+            'bukti' => 'required',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()){
+            return response()->json([
+                'fail' => true,
+                'errors' => $validator->errors()
+            ]);
+        }else{
+            DB::beginTransaction();
+            try{
+                $data = Pengiriman::where('id', $id)->first();
+                
+                if($request->bukti){
+                    $fileName = time() . '.' . $request->bukti->extension();
+                    Storage::disk('public')->putFileAs('uploads/pengiriman', $request->bukti, $fileName);
+                    $data->bukti = '/uploads/pengiriman/'.$fileName;
+                }
+                $data->save();
+
+            }catch(\QueryException $e){
+                DB::rollback();
+                dd($e);
+            }
+
+            DB::commit();
+            return response()->json([
+                'fail' => false,
+            ]);
+        }
+    }
+
     public function pdf($id, Request $request)
     {
         $data = Pengiriman::where('id', $id)->first();

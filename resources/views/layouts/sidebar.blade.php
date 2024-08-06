@@ -7,12 +7,20 @@
     <div class="sidebar-wrapper">
         <nav class="mt-2"> <!--begin::Sidebar Menu-->
             <ul class="nav sidebar-menu flex-column" data-lte-toggle="treeview" role="menu" data-accordion="false">
+                @if(auth()->user()->level == 'Driver')
                 <li class="nav-item">
                     <a href="{{ route('admin.beranda') }}" class="nav-link {{ request()->is('admin/beranda') ? ' active' : '' }}"> 
                         <i class="nav-icon fa fa-chart-pie"></i>
                         <p>Dashboard</p>
                     </a> 
                 </li>
+                <li class="nav-item">
+                    <a href="{{ route('admin.pengiriman.index') }}" class="nav-link {{ request()->is('pengiriman', 'pengiriman/*') ? ' active' : '' }}"> 
+                        <i class="nav-icon fa fa-receipt"></i>
+                        <p>Pengiriman</p>
+                    </a> 
+                </li>
+                @else
                 <li class="nav-item">
                     <a href="{{ route('admin.pelanggan.index') }}" class="nav-link {{ request()->is('pelanggan', 'pelanggan/*') ? ' active' : '' }}"> 
                         <i class="nav-icon fa fa-user"></i>
@@ -49,6 +57,8 @@
                         <p>Sparepart</p>
                     </a>
                 </li>
+                
+                @endif
             </ul> <!--end::Sidebar Menu-->
         </nav>
     </div> <!--end::Sidebar Wrapper-->

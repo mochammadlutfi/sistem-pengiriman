@@ -66,6 +66,7 @@ class PembelianController extends Controller
                 $data->supplier = $request->supplier;
                 $data->tgl = $request->tgl;
                 $data->total = $request->total;
+                $data->status = 'Draft';
                 $data->save();
 
                 foreach($request->lines as $l){
@@ -99,13 +100,11 @@ class PembelianController extends Controller
      */
     public function show($id, Request $request)
     {
-        $data = Booking::with('user')
-        ->withSum([ 'bayar' => fn ($query) => $query->where('status', 'setuju')], 'jumlah')
-        ->where('id', $id)
+        $data = Pembelian::where('id', $id)
         ->first();
         // dd($data);
 
-        return view('admin.booking.detail',[
+        return view('admin.pembelian.show',[
             'data' => $data,
         ]);
         
@@ -227,6 +226,51 @@ class PembelianController extends Controller
     }
 
     
+    public function status($id, Request $request)
+    {
+        $rules = [
+            'status' => 'required',
+        ];
+
+        $pesan = [
+            'status.required' => 'Status Wajib Diisi!',
+        ];
+
+        $validator = Validator::make($request->all(), $rules, $pesan);
+        if ($validator->fails()){
+            return response()->json([
+                'fail' => true,
+                'errors' => $validator->errors()
+            ]);
+        }else{
+            DB::beginTransaction();
+            try{
+                $data = Pembelian::where('id', $id)->first();
+                $data->status = $request->status;
+                $data->save();
+
+                if($request->status == 'Diterima'){
+                    foreach($data->detail as $d){
+                        $sp = Sparepart::where('id', $d->sparepart_id)->first();
+                        $sp->stok += $d->jml;
+                        $sp->save();
+                    }
+                }
+
+            }catch(\QueryException $e){
+                DB::rollback();
+                return response()->json([
+                    'fail' => true,
+                    'pesan' => $e,
+                ]);
+            }
+
+            DB::commit();
+            return response()->json([
+                'fail' => false,
+            ]);
+        }
+    }
     private function getNomor()
     {
         $q = Pembelian::select(DB::raw('MAX(RIGHT(nomor,5)) AS kd_max'));

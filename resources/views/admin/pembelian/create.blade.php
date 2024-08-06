@@ -112,9 +112,10 @@
     <script src="/js/plugins/ckeditor5-classic/build/ckeditor.js"></script>
     <script>
         
-        $("#field-tgl_lahir").flatpickr({
+        $("#field-tgl").flatpickr({
             altInput: true,
-            altFormat: "d M Y",
+            defaultDate : 'today',
+            altFormat: "d F Y",
             dateFormat: "Y-m-d",
             locale : "id",
         });

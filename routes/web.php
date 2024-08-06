@@ -106,6 +106,14 @@ Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
                 Route::delete('/{id}/delete','SparepartController@destroy')->name('delete');
             });
 
+            Route::prefix('/aktivitas/{order}')->name('aktivitas.')->group(function () {
+                Route::get('/','AktivitasController@index')->name('index');
+                Route::post('/store','AktivitasController@store')->name('store');
+                Route::get('/{id}','AktivitasController@show')->name('show');
+                Route::get('/{id}/edit','AktivitasController@edit')->name('edit');
+                Route::post('/{id}/update','AktivitasController@update')->name('store');
+                Route::delete('/{id}/delete','AktivitasController@destroy')->name('delete');
+            });
             Route::prefix('/pembelian')->name('pembelian.')->group(function () {
                 Route::get('/','PembelianController@index')->name('index');
                 Route::get('/create','PembelianController@create')->name('create');
@@ -125,21 +133,11 @@ Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
                 Route::get('/{id}/pdf','PengirimanController@pdf')->name('pdf');
                 Route::get('/{id}/edit','PengirimanController@edit')->name('edit');
                 Route::post('{id}/update','PengirimanController@update')->name('update');
+                Route::post('{id}/bukti','PengirimanController@bukti')->name('bukti');
                 Route::post('{id}/status','PengirimanController@status')->name('status');
                 Route::delete('/{id}/delete','PengirimanController@destroy')->name('delete');
             });
             
-            Route::prefix('/anggota')->name('anggota.')->group(function () {
-                Route::get('/','AnggotaController@index')->name('index');
-                Route::get('/tambah','AnggotaController@tambah')->name('tambah');
-                Route::post('/simpan','AnggotaController@simpan')->name('simpan');
-                Route::get('/baru','AnggotaController@baru')->name('baru');
-                Route::get('/{id}','AnggotaController@show')->name('show');
-                Route::get('/{id}/edit','AnggotaController@edit')->name('edit');
-                Route::post('{id}/confirm','AnggotaController@confirm')->name('confirm');
-                Route::post('{id}/update','AnggotaController@update')->name('update');
-                Route::delete('/{id}/delete','AnggotaController@destroy')->name('delete');
-            });
 
             Route::prefix('/pegawai')->name('pegawai.')->group(function () {
                 Route::get('/','PegawaiController@index')->name('index');

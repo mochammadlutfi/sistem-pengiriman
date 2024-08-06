@@ -73,7 +73,12 @@ class LoginController extends Controller
         }else{
             if(auth()->attempt(array('username' => $request->username, 'password' => $request->password), true))
             {
-                return redirect()->route('admin.beranda');
+                if(auth()->user()->level == 'Driver'){
+                    return redirect()->route('admin.pengiriman.index');
+                }else{
+                    return redirect()->route('admin.beranda');
+                }
+
             }else{
                 $gagal['password'] = array('Password salah!');
                 return back()->withErrors($gagal);

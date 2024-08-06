@@ -1,12 +1,22 @@
 
 <nav class="app-header navbar navbar-expand bg-body">
     <div class="container-fluid">
+        @if(auth()->user()->level == 'Driver')
+        <a href="{{ route('admin.beranda') }}" class="navbar-brand">
+            <span class="brand-text font-weight-light">ARWINDO GHANI UTAMA</span>
+            </a>
+            @endif
         <ul class="navbar-nav">
             <li class="nav-item">
                 <a class="nav-link" data-lte-toggle="sidebar" href="#" role="button">
                     <i class="bi bi-list"></i>
                 </a>
             </li>
+            @if(auth()->user()->level == 'Driver')
+            <li class="nav-item">
+                <a href="{{ route('admin.pengiriman.index') }}" class="nav-link">Pengiriman</a>
+            </li>
+            @endif
         </ul> 
         <ul class="navbar-nav ms-auto">
             <li class="nav-item">

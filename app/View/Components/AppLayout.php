@@ -12,6 +12,10 @@ class AppLayout extends Component
      */
     public function render(): View
     {
-        return view('layouts.app');
+        if(auth()->user()->level == 'Driver'){
+            return view('layouts.driver');
+        }else{
+            return view('layouts.app');
+        }
     }
 }

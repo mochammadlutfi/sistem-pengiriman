@@ -22,6 +22,7 @@
             <div class="row">
                 <div class="col-12"> 
                     <div class="card">
+                        @if(auth()->user()->level != 'Driver')
                         <div class="card-header">
                             <a href="{{ route('admin.pengiriman.create')}}" class="btn btn-primary">
                                 Tambah
@@ -29,6 +30,7 @@
                             <div class="card-tools">
                             </div>
                         </div>
+                        @endif
                         <div class="card-body">
                             <table class="table table-bordered datatable w-100">
                                 <thead>
@@ -56,6 +58,8 @@
                                         <td>{{ $d->driver->nama }}</td>
                                         <td>{{ $d->status }}</td>
                                         <td>
+                                            
+                                            @if(auth()->user()->level != 'Driver')
                                             <div class="dropdown">
                                                 <button class="btn btn-primary btn-sm dropdown-toggle" type="button"
                                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -81,6 +85,12 @@
                                                         </a>
                                                     </li>
                                                 </ul>
+                                                @else
+                                                <a class="btn btn-primary btn-sm" href="{{ route('admin.pengiriman.show', $d->id)}}">
+                                                    Detail
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>                                        
