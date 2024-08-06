@@ -116,6 +116,7 @@ Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
             });
             Route::prefix('/pembelian')->name('pembelian.')->group(function () {
                 Route::get('/','PembelianController@index')->name('index');
+                Route::get('/report','PembelianController@report')->name('report');
                 Route::get('/create','PembelianController@create')->name('create');
                 Route::post('/store','PembelianController@store')->name('store');
                 Route::get('/{id}','PembelianController@show')->name('show');
@@ -127,6 +128,7 @@ Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
 
             Route::prefix('/pengiriman')->name('pengiriman.')->group(function () {
                 Route::get('/','PengirimanController@index')->name('index');
+                Route::get('/report','PengirimanController@report')->name('report');
                 Route::get('/create','PengirimanController@create')->name('create');
                 Route::post('/store','PengirimanController@store')->name('store');
                 Route::get('/{id}','PengirimanController@show')->name('show');

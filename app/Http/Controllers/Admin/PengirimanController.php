@@ -342,4 +342,28 @@ class PengirimanController extends Controller
 
         return $pdf->stream('Invoice '. $data->nomor.'.pdf');
     }
+
+    public function report(Request $request)
+    {
+        // dd($request->all());
+        $tgl = explode(" - ",$request->tgl);
+        $status = $request->status;
+        // dd($tgl);
+        $data = Pengiriman::when(isset($tgl), function ($q) use ($tgl) {
+            return $q->whereBetween('tgl', $tgl);
+        })->when(isset($status), function ($q) use ($status) {
+            return $q->where('status', $status);
+        })->latest()->get();
+
+
+        $config = [
+            'format' => 'A4-L'
+        ];
+        $pdf = PDF::loadView('reports.pengiriman', [
+            'data' => $data,
+            'tgl' => $tgl,
+        ], [ ], $config);
+
+        return $pdf->stream('Laporan Pengiriman '. $request->tgl.'.pdf');
+    }
 }

@@ -27,6 +27,9 @@
                                 Tambah
                             </a>
                             <div class="card-tools">
+                                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#reportModal">
+                                    Download Laporan
+                                </button>
                             </div>
                         </div>
                         <div class="card-body">
@@ -91,9 +94,41 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="reportModal" tabindex="-1" aria-labelledby="reportModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form action="{{ route('admin.pembelian.report') }}" method="GET">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="reportModalLabel">Download Laporan</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <x-input-field label="Periode Tanggal" id="tgl" name="tgl"/>
+                    <x-select-field label="Status" id="status" value="Pending" name="status" :options="[
+                        ['label' => 'Pending', 'value' => 'Pending'],
+                        ['label' => 'Diterima', 'value' => 'Diterima'],
+                        ['label' => 'Batal', 'value' => 'Ditolak'],
+                    ]"/>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
+                    <button type="submit" class="btn btn-primary">Download</button>
+                </div>
+                </form>
+            </div>
+        </div>
+    </div>
     
     @push('scripts')
         <script>
+            $("#field-tgl").flatpickr({
+                altInput: true,
+                altFormat: "j F Y",
+                dateFormat: "Y-m-d",
+                locale : "id",
+                defaultDate: [new Date(Date.now() - 7 * 24 * 60 * 60 * 1000), new Date()],
+                mode: "range"
+            });
         function hapus(id){
             $.confirm({
                 title: 'Hapus Data!',

@@ -1,84 +1,81 @@
 <x-app-layout>
-{{-- 
-    <div class="content">
-        <div class="row">
-            <!-- Row #1 -->
-            <div class="col-6 col-xl-4">
-                <a
-                    class="block block-rounded block-link-rotate text-end"
-                    href="{{ route('admin.user.index') }}">
-                    <div
-                        class="block-content block-content-full d-sm-flex justify-content-between align-items-center">
-                        <div class="d-none d-sm-block">
-                            <i class="fa fa-users fa-2x opacity-25"></i>
+    <div class="app-content-header"> 
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Dashboard</h3>
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div> 
+        </div> 
+    </div>
+    <div class="app-content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-primary shadow-sm">
+                            <i class="fa fa-receipt"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Pengiriman</span>
+                            <span class="info-box-number">
+                                {{ $data['pengiriman'] }}
+                            </span>
                         </div>
-                        <div class="text-end">
-                            <div class="fs-3 fw-semibold">{{ $ovr['user']}}</div>
-                            <div class="fs-sm fw-semibold text-uppercase text-muted">Peserta</div>
-                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                </a>
-            </div>
-            <div class="col-6 col-xl-4">
-                <a
-                    class="block block-rounded block-link-rotate text-end"
-                    href="{{ route('admin.training.index') }}">
-                    <div
-                        class="block-content block-content-full d-sm-flex justify-content-between align-items-center">
-                        <div class="d-none d-sm-block">
-                            <i class="fa fa-book fa-2x opacity-25"></i>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-success shadow-sm">
+                            <i class="fa fa-truck"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Kendaraan</span>
+                            <span class="info-box-number">{{ $data['kendaraan']}}</span>
                         </div>
-                        <div class="text-end">
-                            <div class="fs-3 fw-semibold">{{ $ovr['training'] }}</div>
-                            <div class="fs-sm fw-semibold text-uppercase text-muted">Training</div>
-                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                </a>
-            </div>
-            <div class="col-6 col-xl-4">
-                <a
-                    class="block block-rounded block-link-rotate text-end"
-                    href="{{ route('admin.payment.index') }}">
-                    <div
-                        class="block-content block-content-full d-sm-flex justify-content-between align-items-center">
-                        <div class="d-none d-sm-block">
-                            <i class="fa fa-wallet fa-2x opacity-25"></i>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <!-- fix for small devices only -->
+                <!-- <div class="clearfix hidden-md-up"></div> -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-warning shadow-sm">
+                            <i class="fa fa-user"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Driver</span>
+                            <span class="info-box-number">{{ $data['driver'] }}</span>
                         </div>
-                        <div class="text-end">
-                            <div class="fs-3 fw-semibold">{{ $ovr['pembayaran'] }}</div>
-                            <div class="fs-sm fw-semibold text-uppercase text-muted">Pembayaran</div>
-                        </div>
+                        <!-- /.info-box-content -->
                     </div>
-                </a>
-            </div>
-            <!-- END Row #1 -->
-        </div>
-        
-        <div class="block block-rounded">
-            <div class="block-content p-3">
-                <table class="table table-bordered datatable w-100">
-                    <thead>
-                        <tr>
-                            <th width="400px">Judul</th>
-                            <th width="230px">Tgl Mulai</th>
-                            <th width="230px">Tgl Selesai</th>
-                            <th>Peserta</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($berlangsung as $d)
-                        <tr class="bg-success">
-                            <td>{{ $d->nama }}</td>
-                            <td>{{ \Carbon\Carbon::parse($d->tgl_mulai)->translatedFormat('d F Y') }}</td>
-                            <td>{{ \Carbon\Carbon::parse($d->tgl_selesai)->translatedFormat('d F Y') }}</td>
-                            <td>{{ $d->user_count }}</td>
-                        </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
+                <div class="col-12 col-sm-6 col-md-3">
+                    <div class="info-box">
+                        <span class="info-box-icon text-bg-danger shadow-sm">
+                            <i class="fa fa-cart-shopping"></i>
+                        </span>
+                        <div class="info-box-content">
+                            <span class="info-box-text">Total Pembelian</span>
+                            <span class="info-box-number">{{ $data['pembelian'] }}</span>
+                        </div>
+                        <!-- /.info-box-content -->
+                    </div>
+                    <!-- /.info-box -->
+                </div>
+                <!-- /.col -->
             </div>
         </div>
-    </div> --}}
+    </div>
     @push('scripts')
         <script>
             

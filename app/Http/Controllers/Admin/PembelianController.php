@@ -12,7 +12,7 @@ use DataTables;
 use App\Models\Pembelian;
 use App\Models\PembelianDetail;
 use App\Models\Sparepart;
-
+use PDF;
 class PembelianController extends Controller
 {
     /**
@@ -286,5 +286,30 @@ class PembelianController extends Controller
         }else{
             return $code . date('ym') .'/'. sprintf("%05s", $no);
         }
+    }
+
+    
+    public function report(Request $request)
+    {
+        // dd($request->all());
+        $tgl = explode(" - ",$request->tgl);
+        $status = $request->status;
+        // dd($tgl);
+        $data = Pembelian::when(isset($tgl), function ($q) use ($tgl) {
+            return $q->whereBetween('tgl', $tgl);
+        })->when(isset($status), function ($q) use ($status) {
+            return $q->where('status', $status);
+        })->latest()->get();
+
+
+        $config = [
+            'format' => 'A4-L'
+        ];
+        $pdf = PDF::loadView('reports.pembelian', [
+            'data' => $data,
+            'tgl' => $tgl,
+        ], [ ], $config);
+
+        return $pdf->stream('Laporan Pembelian '. $request->tgl.'.pdf');
     }
 }
