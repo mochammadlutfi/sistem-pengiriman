@@ -69,6 +69,7 @@ Route::prefix('/')->name('admin.')->namespace('Admin')->group(function(){
             Route::prefix('/pelanggan')->name('pelanggan.')->group(function () {
                 Route::get('/','PelangganController@index')->name('index');
                 Route::get('/create','PelangganController@create')->name('create');
+                Route::get('/report','PelangganController@report')->name('report');
                 Route::post('/store','PelangganController@store')->name('store');
                 Route::get('/json/{id}','PelangganController@json')->name('json');
                 Route::get('/{id}','PelangganController@show')->name('show');

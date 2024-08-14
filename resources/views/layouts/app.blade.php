@@ -50,9 +50,9 @@
 
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/2.1.2/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/id.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.4/jquery-confirm.min.js"></script>
 
     <script>
         $.ajaxSetup({

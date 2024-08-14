@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
 use Storage;
 use Carbon\Carbon;
-
+use PDF;
 use App\Models\Pelanggan;
 
 class PelangganController extends Controller
@@ -222,54 +222,19 @@ class PelangganController extends Controller
             ]);
         }
     }
-
     
-    public function peserta($id, Request $request)
+    public function report(Request $request)
     {
-        if ($request->ajax()) {
-            $query = UserTraining::with('user')->where('training_id', $id)->get();
+        $data = Pelanggan::latest()->get();
 
-            return DataTables::of($query)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    $btn = '<div class="dropdown">
-                        <button type="button" class="btn btn-outline-primary btn-sm dropdown-toggle" id="dropdown-default-outline-primary" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Aksi
-                        </button>
-                        <div class="dropdown-menu fs-sm" aria-labelledby="dropdown-default-outline-primary" style="">';
-                        $btn .= '<a class="dropdown-item" href="'. route('admin.pelanggan.edit', $row->id).'"><i class="si si-note me-1"></i>Ubah</a>';
-                        $btn .= '<a class="dropdown-item" href="javascript:void(0)" onclick="hapus('. $row->id.')"><i class="si si-trash me-1"></i>Hapus</a>';
-                    $btn .= '</div></div>';
-                    return $btn; 
-                })
-                ->editColumn('tgl_training', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->editColumn('tgl_daftar', function ($row) {
-                    $tgl_mulai = Carbon::parse($row->tgl_mulai_daftar);
-                    $tgl_selesai = Carbon::parse($row->tgl_selesai_daftar);
-                    if($tgl_mulai->eq($tgl_selesai) || $row->tgl_selesai_daftar == null){
-                        return $tgl_mulai->translatedformat('d M Y');
-                    }else{
-                        return $tgl_mulai->translatedformat('d M') . ' - '. $tgl_selesai->translatedformat('d M Y');
-                    }
-                })
-                ->rawColumns(['action',]) 
-                ->make(true);
-        }
 
-        $data = Training::where('id', $id)->first();
-        $user = User::orderBy('nama', 'ASC')->get();
-
-        return view('admin.pelanggan.peserta',[
+        $config = [
+            'format' => 'A4-L'
+        ];
+        $pdf = PDF::loadView('reports.pelanggan', [
             'data' => $data,
-            'user' => $user
-        ]);
+        ], [ ], $config);
+
+        return $pdf->stream('Laporan Pelanggan.pdf');
     }
 }

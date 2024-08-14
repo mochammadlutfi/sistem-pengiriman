@@ -228,6 +228,7 @@ class PembelianController extends Controller
     
     public function status($id, Request $request)
     {
+        // dd($request->all());
         $rules = [
             'status' => 'required',
         ];
@@ -247,7 +248,11 @@ class PembelianController extends Controller
             try{
                 $data = Pembelian::where('id', $id)->first();
                 $data->status = $request->status;
+                if($request->status == 'Ditolak'){
+                    $data->alasan = $request->alasan;
+                }
                 $data->save();
+
 
                 if($request->status == 'Diterima'){
                     foreach($data->detail as $d){

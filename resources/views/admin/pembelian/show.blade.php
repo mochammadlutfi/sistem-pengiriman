@@ -30,12 +30,14 @@
                                 <span class="badge bg-primary">Menunggu Penerimaan</span>
                             @elseif($data->status == 'Diterima')
                                 <span class="badge bg-success">Selesai</span>
+                            @elseif($data->status == 'Ditolak')
+                                <span class="badge bg-danger">Ditolak</span>
                             @else
                                 <span class="badge bg-danger">Dibatalkan</span>
                             @endif
                             </h3>
                             <div class="card-tools">
-                                @if(auth()->user()->level == 'Pimpinan')
+                                @if(auth()->user()->level == 'Pimpinan' && $data->status == 'Draft')
                                 <button type="button" class="btn btn-primary" onclick="updateStatus('Pending')">
                                     <i class="fa fa-check me-1"></i>
                                     Setuju
@@ -57,9 +59,12 @@
                             <div class="row">
                                 <div class="col-6">
                                     <x-field-read label="Supplier" value="{{ $data->supplier }}"/>
+                                    @if ($data->status == 'Ditolak')
+                                        <x-field-read label="Alasan Penolakan" value="{{ $data->alasan }}"/>
+                                    @endif
                                 </div>
                                 <div class="col-6">
-                                    <x-field-read label="Tanggal" value="{{ $data->tgl }}"/>
+                                    <x-field-read label="Tanggal" value="{{ \Carbon\Carbon::parse($data->tgl)->translatedFormat('d F Y') }}"/>
                                 </div>
                             </div>
                             <table id="table-detail" class="table table-bordered table-vcenter">
@@ -120,7 +125,13 @@
             if(status == 'Pending'){
                 var content = 'Setuju Pengajuan Pembelian?';
             }else if(status == 'Ditolak'){
-                var content = 'Tolak Pengajuan Pembelian?';
+                var content = ''+
+                '<form action="" class="formName">' +
+                '<div class="form-group">' +
+                '<label>Tolak Pengajuan Pembelian?</label>' +
+                '<input type="text" placeholder="Alasan" class="alasan form-control" required />' +
+                '</div>' +
+                '</form>';
             }else{
                 var content = 'Barang Sudah Diterima?';
             }
@@ -142,6 +153,7 @@
                                 type: "POST",
                                 data : {
                                     status : status,
+                                    alasan : this.$content.find('.alasan').val(),
                                     _token : $("meta[name='csrf-token']").attr("content"),
                                 },
                                 headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},

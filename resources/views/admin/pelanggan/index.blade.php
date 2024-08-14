@@ -27,6 +27,9 @@
                                 Tambah
                             </a>
                             <div class="card-tools">
+                                <a href="{{ route('admin.pelanggan.report') }}" class="btn btn-primary">
+                                Download PDF
+                                </a>
                             </div>
                         </div>
                         <div class="card-body">
