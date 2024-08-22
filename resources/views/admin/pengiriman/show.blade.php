@@ -373,7 +373,7 @@
             formData.append('_token', token);
 
             var id = $("#field-id").val();
-            var url = " {{ route('admin.aktivitas.index', $data->id) }}";
+            var url = "{{ route('admin.pengiriman.bukti', $data->id) }}";
 
             $.ajax({
                 url: url,
